@@ -142,6 +142,30 @@ FROM (
     GROUP BY "Platform", "Product Category"
 ) AS category_revenue;
 
+-- Refund rate by Product Category
+SELECT "Product Category",
+    COUNT(*) AS total_orders,
+    SUM(CASE WHEN "Refund Requested" = 'Yes' THEN 1 ELSE 0 END) AS refunds,
+    ROUND(SUM(CASE WHEN "Refund Requested" = 'Yes' THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS refund_rate_percent
+FROM "Ecommerce_Data"
+GROUP BY "Product Category"
+ORDER BY refund_rate_percent DESC;
+
+sql-- Sentiment vs Average Rating (validate sentiment accuracy)
+SELECT "Sentiment", ROUND(AVG("Service Rating"), 2) AS avg_rating, COUNT(*) AS total
+FROM "Ecommerce_Data"
+GROUP BY "Sentiment"
+ORDER BY avg_rating DESC;
+
+-- Delay impact on refunds
+SELECT "Delivery Delay",
+    COUNT(*) AS total_orders,
+    SUM(CASE WHEN "Refund Requested" = 'Yes' THEN 1 ELSE 0 END) AS refunds,
+    ROUND(SUM(CASE WHEN "Refund Requested" = 'Yes' THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS refund_rate
+FROM "Ecommerce_Data"
+GROUP BY "Delivery Delay";
+
+
 
 
 
